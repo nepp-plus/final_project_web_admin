@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="./js/custom_axios.js"></script>
+    <title>관리자페이지 로그인</title>
+  </head>
+  <body>
+    <form>
+      아이디<br />
+      <input id="emailInput" placeholder="이메일 양식으로 입력" type="email" />
+      <br />
+      비밀번호<br />
+      <input id="passwordInput" placeholder="8자 이상 입력" type="password" />
+
+      <br /><br />
+      <button type="button" onclick="clickLogin()">로그인</button>
+    </form>
+  </body>
+  <script>
+    function clickLogin() {
+      let email = $("#emailInput").val();
+      let pw = $("#passwordInput").val();
+
+      // 로그인 요청 데이터를 담아둘 FormData 클래스
+      const form = new FormData();
+      form.append("email", email);
+      form.append("password", pw);
+
+      // 커스텀 axios로 실제 로그인 호출
+
+      myAxios
+        .post("/user", form)
+        .then(function (res) {
+          // 로그인 시에도 받아온 사용자 정보를 localStoage에 저장.
+          let user = res.data.data.user;
+          localStorage.setItem("userInfo", JSON.stringify(user));
+
+          // 성공 응답에 담긴 토큰을 변수로 저장
+          let token = res.data.data.token;
+
+          // 변수에 담아둔 토큰을 쿠키에 저장
+          $.cookie("userToken", token);
+
+          // 쿠키에 잘 저장되었는지 확인
+          console.log("쿠키에 저장된 토큰 : ", $.cookie("userToken"));
+
+          // 쿠키에 저장 : $.cookie('항목이름', 저장변수)
+          // 쿠키에 있는 값 조회 : $.cookie('항목이름')
+
+          // 메인화면으로 이동
+          // $(location).attr("href", "main.html");
+        })
+        .catch(function (error) {
+          // 실패시 error의 응답에 담긴 message를 얼럿으로
+          alert(error.response.data.message);
+        });
+    }
+  </script>
+</html>
