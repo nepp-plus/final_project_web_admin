@@ -31,6 +31,11 @@
       getAllLargetCategoryList();
     });
 
+    let editLargeCategory = (large_category_id) => {
+      let url = `/html/product/category_edit.html?large_category_id=${large_category_id}`;
+      $(location).attr("href", url);
+    };
+
     let addLargeCategory = () => {
       let url = `/html/product/category_add.html`;
       $(location).attr("href", url);
