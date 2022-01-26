@@ -15,6 +15,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="/js/custom_axios.js"></script>
     <script src="/js/order/getOrderList.js"></script>
+    <style>
+      table {
+        width: 100%;
+        border: 1px solid #444444;
+        border-collapse: collapse;
+      }
+      th {
+        border-bottom: 1px solid #444444;
+        border-left: 1px solid #444444;
+        padding: 10px;
+      }
+      td {
+        border-bottom: 1px solid #444444;
+        border-left: 1px solid #444444;
+        padding: 10px;
+      }
+      th:first-child {
+        border-left: none;
+      }
+      td:first-child {
+        border-left: none;
+      }
+    </style>
   </head>
   <body>
     <h1>상품 준비중</h1>
@@ -29,7 +52,19 @@
     <div>
       <button onclick="searchClick()">검색</button>
     </div>
-    <ul id="orderList"></ul>
+    <table>
+      <thead>
+        <tr>
+          <th>DB내id</th>
+          <th>주문자</th>
+          <th>수령인</th>
+          <th>수령할 주소</th>
+          <th>우편번호</th>
+          <th>수령인 연락처</th>
+        </tr>
+      </thead>
+      <tbody id="orderList"></tbody>
+    </table>
   </body>
   <script>
     function searchClick() {

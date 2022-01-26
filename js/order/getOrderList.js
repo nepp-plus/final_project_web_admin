@@ -26,11 +26,15 @@ let getOrderList = (status) => {
         console.log(element);
 
         let li = `
-        <li>
+        <tr>
+        <td>${element.id}</td>
+        <td>${element.order.receiver_name}</td>
+        <td>${element.order.receiver_name}</td>
+        <td>${element.order.address}</td>
+        <td>(우편번호와야댐)</td>
+        <td>${element.order.phone_num}</td>
         <div>
-        <span>${"테스트"}</span>
-        <div>
-        </li>
+        </tr>
         `;
 
         orderListUl.append(li);
