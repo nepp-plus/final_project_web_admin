@@ -1,7 +1,7 @@
-let currentPage = 0;
+let currentLargeCategoryId = 0;
 
 let getAllLargetCategoryList = () => {
-  currentPage = 0;
+  currentLargeCategoryId = 0;
   myAxios
     .get("/largecategory", {
       params: {},
@@ -31,7 +31,7 @@ let getAllLargetCategoryList = () => {
 };
 
 let getLargeCategoryDetailById = (id) => {
-  currentPage = id;
+  currentLargeCategoryId = id;
   myAxios
     .get(`/largecategory/${id}`, {
       params: {},
@@ -86,7 +86,26 @@ let editSmallCategory = (id, name) => {
       .patch("/admin/smallcategory", form)
       .then(function (res) {
         alert("소분류 수정 완료");
-        getLargeCategoryDetailById(currentPage);
+        getLargeCategoryDetailById(currentLargeCategoryId);
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
+  }
+};
+
+let addSmallCategory = () => {
+  let editName = prompt("추가할 소분류 이름");
+
+  if (!(editName == null || editName == "")) {
+    let form = new FormData();
+    form.append("large_category_id", currentLargeCategoryId);
+    form.append("name", editName);
+    myAxios
+      .post("/admin/smallcategory", form)
+      .then(function (res) {
+        alert("소분류 추가 완료");
+        getLargeCategoryDetailById(currentLargeCategoryId);
       })
       .catch(function (error) {
         alert(error.response.data.message);
