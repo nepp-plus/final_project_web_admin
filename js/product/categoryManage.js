@@ -27,6 +27,23 @@ let getAllLargetCategoryList = () => {
     });
 };
 
+let getLargeCategoryDetailById = (id) => {
+  myAxios
+    .get(`/largecategory/${id}`, {
+      params: {},
+    })
+    .then(function (res) {
+      console.log(res);
+      let category = res.data.data.large_category;
+
+      $("#categoryIcon").attr("src", category.icon_url);
+      $("#categoryName").val(category.name);
+    })
+    .catch(function (error) {
+      alert(error.response.data.message);
+    });
+};
+
 let postLargeCategory = () => {
   const form = new FormData($("#categoryForm")[0]);
   myAxios
