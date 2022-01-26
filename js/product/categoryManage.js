@@ -1,4 +1,7 @@
+let currentPage = 0;
+
 let getAllLargetCategoryList = () => {
+  currentPage = 0;
   myAxios
     .get("/largecategory", {
       params: {},
@@ -28,6 +31,7 @@ let getAllLargetCategoryList = () => {
 };
 
 let getLargeCategoryDetailById = (id) => {
+  currentPage = id;
   myAxios
     .get(`/largecategory/${id}`, {
       params: {},
@@ -42,6 +46,52 @@ let getLargeCategoryDetailById = (id) => {
     .catch(function (error) {
       alert(error.response.data.message);
     });
+
+  myAxios
+    .get(`/largecategory/${id}/smallcategory`, {
+      params: {},
+    })
+    .then(function (res) {
+      console.log(res);
+      let smallCategoryListUl = $("#smallCategoryList");
+      smallCategoryListUl.empty();
+      let smallCategoryList = res.data.data.small_categories;
+
+      smallCategoryList.forEach((element) => {
+        let li = `
+        <li>
+        <div smallCategoryId=${element.id}>
+        <span>${element.name}</span>
+        <button onclick="editSmallCategory(${element.id}, '${element.name}')">수정하기</button>
+        <div>
+        </li>
+        `;
+        smallCategoryListUl.append(li);
+      });
+    })
+    .catch(function (error) {
+      alert(error.response.data.message);
+    });
+};
+
+let editSmallCategory = (id, name) => {
+  let editName = prompt("변경할 소분류 이름", name);
+
+  if (!(editName == null || editName == "")) {
+    let form = new FormData();
+    form.append("small_category_id", id);
+    form.append("field", "name");
+    form.append("value", editName);
+    myAxios
+      .patch("/admin/smallcategory", form)
+      .then(function (res) {
+        alert("소분류 수정 완료");
+        getLargeCategoryDetailById(currentPage);
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
+  }
 };
 
 let postLargeCategory = () => {

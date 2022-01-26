@@ -27,24 +27,26 @@
           name="value"
           id="categoryName"
         />
-        <br />
         <button onclick="editLargeCategory('name')" type="button">
           이름 수정
         </button>
       </div>
     </form>
-    <form id="editCategoryIconForm">
+    <form id="editCategoryIconForm" style="margin-top: 20px">
       <div>
         <span>기존 사용중인아이콘파일</span><br />
         <img src="" style="width: 100px; height: 100px" id="categoryIcon" />
         <br />
         <input type="file" accept="image/*" name="icon_url" />
-        <br />
         <button onclick="editLargeCategory('icon_url')" type="button">
           아이콘파일 수정
         </button>
       </div>
     </form>
+    <div style="margin-top: 10px">
+      <span>소분류 목록</span><br />
+      <ul id="smallCategoryList"></ul>
+    </div>
   </body>
   <script>
     let categoryId = 0;
