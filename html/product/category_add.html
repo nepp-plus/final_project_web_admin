@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>대분류 관리</title>
+    <title>대분류 추가</title>
     <link href="/css/custom_style.css" rel="stylesheet" />
     <script
       src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -17,23 +17,24 @@
     <script src="/js/product/categoryManage.js"></script>
   </head>
   <body>
-    <h1>대분류 관리</h1>
-    <div>
-      <span>새 대분류 추가하기</span>
-      <button onclick="addLargeCategory()">등록</button>
-    </div>
-    <div>
-      <ul id="largetCategoryList"></ul>
-    </div>
+    <h1>대분류 추가</h1>
+    <form id="categoryForm">
+      <div>
+        <span>대분류 이름</span>
+        <input type="text" placeholder="대분류 이름" name="name" />
+      </div>
+      <div>
+        <span>아이콘파일</span>
+        <input type="file" accept="image/*" name="icon_url" />
+      </div>
+    </form>
+    <button onclick="addLargeCategory()">등록</button>
   </body>
   <script>
-    $("document").ready(() => {
-      getAllLargetCategoryList();
-    });
+    $("document").ready(() => {});
 
     let addLargeCategory = () => {
-      let url = `/html/product/category_add.html`;
-      $(location).attr("href", url);
+      postLargetCategory();
     };
   </script>
 </html>
