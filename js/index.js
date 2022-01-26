@@ -1,9 +1,8 @@
 if ($.cookie("userToken")) {
   // 토큰이 저장되어있다면? 내 정보 호출
   // 응답이 제대로 오면 메인으로, 아니면 로그인
-
   myAxios
-    .get("/my_info", {
+    .get("/user", {
       params: {
         // project에선 아직 첨부할 자료가 없어서 비워둔다
       },
