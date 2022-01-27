@@ -1,7 +1,7 @@
 let currentLargeCategoryId = 0;
 let currentSmallCategoryId = 0;
 
-let getAllLargetCategoryList = () => {
+let getAllLargetCategoryList = async () => {
   currentLargeCategoryId = 0;
   myAxios
     .get("/largecategory", {
@@ -12,8 +12,6 @@ let getAllLargetCategoryList = () => {
 
       let largeCategories = res.data.data.large_categories;
       largeCategories.forEach((element) => {
-        console.log(element);
-
         let listItem = `
         <option value=${element.id}>
         ${element.name}
@@ -28,33 +26,15 @@ let getAllLargetCategoryList = () => {
     });
 };
 
-let getLargeCategoryDetailById = (id) => {
+let getLargeCategoryDetailById = async (id) => {
   currentLargeCategoryId = id;
 
-  myAxios
-    .get(`/largecategory/${id}/smallcategory`, {
-      params: {},
-    })
-    .then(function (res) {
-      console.log(res);
-      let smallCategoryListUl = $("#smallCategorySelect");
-      smallCategoryListUl.empty();
-      let smallCategoryList = res.data.data.small_categories;
+  let res = await myAxios.get(`/largecategory/${id}/smallcategory`, {
+    params: {},
+  });
 
-      smallCategoryListUl.append(`<option value="-1">-선택-</option>`);
-
-      smallCategoryList.forEach((element) => {
-        let listItem = `
-        <option value=${element.id}>
-        ${element.name}
-        </option>
-        `;
-        smallCategoryListUl.append(listItem);
-      });
-    })
-    .catch(function (error) {
-      alert(error.response.data.message);
-    });
+  let smallCategoryList = res.data.data.small_categories;
+  return smallCategoryList;
 };
 
 let addProductToServer = () => {
@@ -124,12 +104,36 @@ let getProductList = (stats) => {
       });
     })
     .catch(function (error) {
+      console.log(error);
+    });
+};
+
+let getProductDetail = async (productId) => {
+  const res = await myAxios.get(`/product/${productId}`, {
+    params: {
+      // status: status,
+    },
+  });
+  return res.data.data.product;
+};
+
+let editProductByForm = (form) => {
+  myAxios
+    .patch("/admin/product", form)
+    .then(function (res) {
+      alert("상품 수정 완료");
+
+      let url = `/html/product/product_manage.html`;
+      $(location).attr("href", url);
+    })
+    .catch(function (error) {
       alert(error.response.data.message);
     });
 };
 
 let editProduct = (id) => {
-  alert("수정 : " + id);
+  let url = `/html/product/product_edit.html?product_id=${id}`;
+  $(location).attr("href", url);
 };
 
 let deleteProduct = (id) => {

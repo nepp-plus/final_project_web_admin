@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>상품정보 수정</title>
+    <link href="/css/custom_style.css" rel="stylesheet" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="/js/custom_axios.js"></script>
+    <script src="/js/product/productManage.js"></script>
+  </head>
+  <body>
+    <h1 id="categoryTitle">상품정보 수정</h1>
+    <form id="editProductNameForm" style="margin-top: 15px">
+      <div>
+        <p>상품명</p>
+        <input
+          id="productName"
+          type="text"
+          placeholder="상품 이름 입력"
+          name="value"
+        />
+      </div>
+
+      <div>
+        <button onclick="editProductName()" type="button">상품이름 저장</button>
+      </div>
+    </form>
+    <form id="editCategoryForm" style="margin-top: 15px">
+      <div>
+        <p>대분류 선택</p>
+        <select id="largeCategorySelect">
+          <option value="-1">-선택-</option>
+        </select>
+      </div>
+      <div>
+        <p>소분류 선택</p>
+        <select id="smallCategorySelect">
+          <option value="-1">-선택-</option>
+        </select>
+      </div>
+    </form>
+    <div>
+      <button onclick="editProductSmallCategory()" type="button">
+        카테고리 저장
+      </button>
+    </div>
+    <form id="editCategoryIconForm" style="margin-top: 20px">
+      <div>
+        <span>기존 사용중인아이콘파일</span><br />
+        <img src="" style="width: 100px; height: 100px" id="categoryIcon" />
+        <br />
+        <input type="file" accept="image/*" name="icon_url" />
+        <button onclick="editLargeCategory('icon_url')" type="button">
+          아이콘파일 수정
+        </button>
+      </div>
+    </form>
+    <div style="margin-top: 20px">
+      <span>소분류 목록</span><br />
+      <div style="margin-top: 10px">
+        <span>새 소분류 추가하기</span>
+        <button onclick="addSmallCategory()">추가</button>
+      </div>
+      <ul id="smallCategoryList" style="margin-top: 10px"></ul>
+    </div>
+  </body>
+  <script>
+    let productId = 0;
+    $("document").ready(() => {
+      let searchParams = new URLSearchParams(window.location.search);
+      // 주소창에 project_id가 뭐라고 적혀있는지 찾아서 저장.
+      productId = searchParams.get("product_id");
+      $("#categoryTitle").text(`${productId}번 상품 수정`);
+
+      getAllLargetCategoryList().then(() => {
+        getProductDetail(productId).then((product) => {
+          console.log("product", product);
+
+          $("#largeCategorySelect")
+            .val(product.small_category_info.large_category_id)
+            .prop("selected", true);
+
+          getLargeCategoryDetailById(
+            product.small_category_info.large_category_id
+          ).then((smallCategoryList) => {
+            let smallCategorySelect = $("#smallCategorySelect");
+            smallCategorySelect.empty();
+            smallCategorySelect.append(`<option value="-1">-선택-</option>`);
+            smallCategoryList.forEach((element) => {
+              let listItem = `
+                <option value=${element.id}>
+                ${element.name}
+                </option>
+                `;
+              smallCategorySelect.append(listItem);
+            });
+
+            $("#smallCategorySelect")
+              .val(product.small_category_info.id)
+              .prop("selected", true);
+          });
+        });
+      });
+    });
+
+    $("#largeCategorySelect").on("change", function () {
+      let selectedLargeCategoryId = $(this).val();
+
+      if (selectedLargeCategoryId != -1) {
+        getLargeCategoryDetailById(selectedLargeCategoryId).then(
+          (smallCategoryList) => {
+            let smallCategorySelect = $("#smallCategorySelect");
+            smallCategorySelect.empty();
+            smallCategorySelect.append(`<option value="-1">-선택-</option>`);
+            smallCategoryList.forEach((element) => {
+              let listItem = `
+            <option value=${element.id}>
+            ${element.name}
+            </option>
+            `;
+              smallCategorySelect.append(listItem);
+            });
+          }
+        );
+      }
+    });
+
+    let editProductSmallCategory = () => {
+      let smallCategoryId = $("#smallCategorySelect").val();
+      if (smallCategoryId == -1) {
+        alert("카테고리를 선택해주세요.");
+        return;
+      }
+
+      const form = new FormData();
+      let selectedSmallCategoryId = $("#smallCategorySelect").val();
+      form.append("small_category_id", selectedSmallCategoryId);
+
+      alert(smallCategoryId);
+    };
+
+    let editProductName = () => {
+      let form = new FormData($("#editProductNameForm")[0]);
+      form.append("product_id", productId);
+      form.append("field", "name");
+      editProductByForm(form);
+    };
+  </script>
+</html>
