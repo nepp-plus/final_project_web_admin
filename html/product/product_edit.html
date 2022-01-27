@@ -84,6 +84,8 @@
         getProductDetail(productId).then((product) => {
           console.log("product", product);
 
+          $("#productName").val(product.name);
+
           $("#largeCategorySelect")
             .val(product.small_category_info.large_category_id)
             .prop("selected", true);
@@ -142,9 +144,10 @@
 
       const form = new FormData();
       let selectedSmallCategoryId = $("#smallCategorySelect").val();
-      form.append("small_category_id", selectedSmallCategoryId);
-
-      alert(smallCategoryId);
+      form.append("product_id", productId);
+      form.append("field", "small_category_id");
+      form.append("value", selectedSmallCategoryId);
+      editProductByForm(form);
     };
 
     let editProductName = () => {
