@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>상품 등록</title>
+    <link href="/css/custom_style.css" rel="stylesheet" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="/js/custom_axios.js"></script>
+    <script src="/js/product/productManage.js"></script>
+  </head>
+  <body>
+    <h1>상품 등록</h1>
+    <form id="productForm">
+      <div>
+        <p>대분류 선택</p>
+        <select id="largeCategorySelect">
+          <option value="-1">-선택-</option>
+        </select>
+      </div>
+      <div>
+        <p>소분류 선택</p>
+        <select id="smallCategorySelect">
+          <option value="-1">-선택-</option>
+        </select>
+      </div>
+      <div style="margin-top: 15px">
+        <p>상품명</p>
+        <input type="text" placeholder="상품 이름 입력" name="name" />
+      </div>
+      <div style="margin-top: 15px">
+        <p>정가</p>
+        <input
+          type="number"
+          placeholder="상품의 원래 가격"
+          name="original_price"
+        />
+      </div>
+      <div style="margin-top: 15px">
+        <p>실제 판매가</p>
+        <input
+          type="number"
+          placeholder="실제로 판매할 금액 (할인율 자동계산)"
+          name="sale_price"
+        />
+      </div>
+      <div style="margin-top: 15px">
+        <p>상품 메인 이미지파일</p>
+        <input
+          type="file"
+          accept="image/*"
+          name="image_url"
+          multiple="multiple"
+        />
+      </div>
+
+      <div>
+        <p>상품 상세 이미지파일</p>
+        <input
+          type="file"
+          accept="image/*"
+          name="detail_image_url"
+          multiple="multiple"
+        />
+      </div>
+    </form>
+    <button onclick="addProduct()" style="margin-top: 30px">등록</button>
+  </body>
+  <script>
+    $("document").ready(() => {
+      getAllLargetCategoryList();
+    });
+
+    $("#largeCategorySelect").on("change", function () {
+      let selectedLargeCategoryId = $(this).val();
+
+      if (selectedLargeCategoryId != -1) {
+        getLargeCategoryDetailById(selectedLargeCategoryId);
+      }
+    });
+
+    let addProduct = () => {
+      let smallCategoryId = $("#smallCategorySelect").val();
+      if (smallCategoryId == -1) {
+        alert("카테고리를 선택해주세요.");
+        return;
+      }
+      addProductToServer();
+    };
+  </script>
+</html>
