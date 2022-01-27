@@ -52,25 +52,14 @@
         카테고리 저장
       </button>
     </div>
-    <form id="editCategoryIconForm" style="margin-top: 20px">
+    <form id="editOptionsForm" style="margin-top: 20px">
       <div>
-        <span>기존 사용중인아이콘파일</span><br />
-        <img src="" style="width: 100px; height: 100px" id="categoryIcon" />
-        <br />
-        <input type="file" accept="image/*" name="icon_url" />
-        <button onclick="editLargeCategory('icon_url')" type="button">
-          아이콘파일 수정
-        </button>
+        <span>옵션 항목</span
+        ><button onclick="addOption()" type="button">옵션 항목 추가</button
+        ><br />
+        <ul id="optionsUl"></ul>
       </div>
     </form>
-    <div style="margin-top: 20px">
-      <span>소분류 목록</span><br />
-      <div style="margin-top: 10px">
-        <span>새 소분류 추가하기</span>
-        <button onclick="addSmallCategory()">추가</button>
-      </div>
-      <ul id="smallCategoryList" style="margin-top: 10px"></ul>
-    </div>
   </body>
   <script>
     let productId = 0;
@@ -80,37 +69,7 @@
       productId = searchParams.get("product_id");
       $("#categoryTitle").text(`${productId}번 상품 수정`);
 
-      getAllLargetCategoryList().then(() => {
-        getProductDetail(productId).then((product) => {
-          console.log("product", product);
-
-          $("#productName").val(product.name);
-
-          $("#largeCategorySelect")
-            .val(product.small_category_info.large_category_id)
-            .prop("selected", true);
-
-          getLargeCategoryDetailById(
-            product.small_category_info.large_category_id
-          ).then((smallCategoryList) => {
-            let smallCategorySelect = $("#smallCategorySelect");
-            smallCategorySelect.empty();
-            smallCategorySelect.append(`<option value="-1">-선택-</option>`);
-            smallCategoryList.forEach((element) => {
-              let listItem = `
-                <option value=${element.id}>
-                ${element.name}
-                </option>
-                `;
-              smallCategorySelect.append(listItem);
-            });
-
-            $("#smallCategorySelect")
-              .val(product.small_category_info.id)
-              .prop("selected", true);
-          });
-        });
-      });
+      refreshData();
     });
 
     $("#largeCategorySelect").on("change", function () {
@@ -155,6 +114,113 @@
       form.append("product_id", productId);
       form.append("field", "name");
       editProductByForm(form);
+    };
+
+    let addOption = () => {
+      let optionName = prompt("추가할 옵션 이름");
+
+      if (!(optionName == null || optionName == "")) {
+        let form = new FormData();
+        form.append("product_id", productId);
+        form.append("name", optionName);
+        myAxios
+          .post("/admin/product/option", form)
+          .then(function (res) {
+            alert("옵션 항목 추가 완료");
+            refreshData();
+          })
+          .catch(function (error) {
+            console(error.response.data.message);
+          });
+      }
+    };
+
+    let editOptionName = (id, name) => {
+      let form = new FormData();
+      alert(`옵션id : ${id}, 변경할이름 : ${name}`);
+    };
+    let addOptionValue = (id) => {
+      let form = new FormData();
+      let optionName = prompt("추가할 선택지 이름");
+
+      if (!(optionName == null || optionName == "")) {
+        let form = new FormData();
+        form.append("product_option_id", id);
+        form.append("name", optionName);
+        myAxios
+          .post("/admin/product/option/value", form)
+          .then(function (res) {
+            alert("선택지 추가 완료");
+            refreshData();
+          })
+          .catch(function (error) {
+            console(error.response.data.message);
+          });
+      }
+    };
+
+    let refreshData = () => {
+      getAllLargetCategoryList().then(() => {
+        getProductDetail(productId).then((product) => {
+          console.log("product", product);
+
+          $("#productName").val(product.name);
+
+          let optionsUl = $("#optionsUl");
+          optionsUl.empty();
+          product.product_options.forEach((element) => {
+            let li = `
+            <li>
+              <div optionId=${element.id}>
+              <span> - ${element.name}</span>
+              <button onclick="editOptionName(${element.id}, '${element.name}')"  type='button'>수정하기</button>
+              <button onclick="addOptionValue(${element.id})"  type='button'>하위 선택지 추가</button>
+              <ul id='option_values_${element.id}'></ul>
+              </div>
+              </li>`;
+            optionsUl.append(li);
+
+            let valuesUl = $(`#option_values_${element.id}`);
+
+            element.option_values.forEach((value) => {
+              console.log("선택지", value);
+              let li = `
+              <li>
+                <div valueId=${value.id}>
+                <span> - ${value.name}</span>
+                <button onclick="editOptionName(${value.id}, '${value.name}')"  type='button'>수정하기</button>
+                <ul id='optionId${value.id}'></ul>
+                </div>
+                </li>`;
+              valuesUl.append(li);
+            });
+          });
+
+          $("#largeCategorySelect")
+            .val(product.small_category_info.large_category_id)
+            .prop("selected", true);
+
+          getLargeCategoryDetailById(
+            product.small_category_info.large_category_id
+          ).then((smallCategoryList) => {
+            let smallCategorySelect = $("#smallCategorySelect");
+            smallCategorySelect.empty();
+            smallCategorySelect.append(`<option value="-1">-선택-</option>`);
+            smallCategoryList.forEach((element) => {
+              let listItem = `
+                <option value=${element.id}>
+                ${element.name}
+                </option>
+                `;
+              smallCategorySelect.append(listItem);
+            });
+
+            $("#smallCategorySelect")
+              .val(product.small_category_info.id)
+              .prop("selected", true);
+          });
+        });
+      });
     };
   </script>
 </html>
