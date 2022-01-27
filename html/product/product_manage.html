@@ -1,1 +1,52 @@
-상품 등록
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>상품 목록 관리</title>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <link href="/css/custom_style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="/js/custom_axios.js"></script>
+    <script src="/js/product/productManage.js"></script>
+  </head>
+  <body>
+    <h1>상품 목록 관리</h1>
+    <div style="display: none">
+      <span>기간</span>
+
+      <span>시작 일자</span>
+      <input type="date" id="startDate" />
+      <span>종료 일자</span>
+      <input type="date" id="endDate" />
+    </div>
+    <div>
+      <button onclick="searchClick()" style="display: none">검색</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>상품명</th>
+          <th>정가</th>
+          <th>할인가 (실판매가)</th>
+          <th>옵션목록</th>
+          <th>수정</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody id="productList"></tbody>
+    </table>
+  </body>
+  <script>
+    $("document").ready(() => {
+      getProductList();
+    });
+  </script>
+</html>

@@ -74,3 +74,64 @@ let addProductToServer = () => {
       alert(error.response.data.message);
     });
 };
+
+let getProductList = (stats) => {
+  myAxios
+    .get("/admin/product", {
+      params: {
+        // status: status,
+      },
+    })
+    .then(function (res) {
+      console.log(res);
+      let productArr = res.data.data.all_product_list;
+
+      let productListTable = $("#productList");
+      productListTable.empty();
+      productArr.forEach((element) => {
+        console.log(element);
+
+        let tableRow = `
+        <tr>
+        <td>${element.id}</td>
+        <td>${element.name}</td>
+        <td>${element.original_price}</td>`;
+
+        tableRow += `<td>${element.sale_price}</td>
+        <td><ul>`;
+
+        element.product_options.forEach((option) => {
+          console.log(option);
+
+          let optionItem = `<li style='color:#3971ff;'> - ${option.name} : `;
+          option.option_values.forEach((value) => {
+            optionItem += `${value.name}, `;
+          });
+
+          optionItem = optionItem.slice(0, -2);
+
+          tableRow += optionItem;
+        });
+
+        tableRow += `</ul></td>
+        <td><button categoryId=${element.id} onclick={editProduct(${element.id})}>수정</button></td>
+        <td><button categoryId=${element.id} onclick={deleteProduct(${element.id})}>삭제</button></td>
+        <div>
+        </tr>
+        `;
+
+        productListTable.append(tableRow);
+      });
+    })
+    .catch(function (error) {
+      alert(error.response.data.message);
+    });
+};
+
+let editProduct = (id) => {
+  alert("수정 : " + id);
+};
+
+let deleteProduct = (id) => {
+  alert("삭제 : " + id);
+};
