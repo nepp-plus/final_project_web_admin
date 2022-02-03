@@ -45,7 +45,28 @@
   </body>
   <script>
     function searchClick() {
-      getOrderList((status = "상품준비중"));
+      getOrderList((status = "상품준비중")).then((orders) => {
+        console.log(orders);
+        let orderListUl = $("#orderList");
+        orderListUl.empty();
+        orders.forEach((element) => {
+          console.log(element);
+
+          let li = `
+        <tr>
+        <td>${element.id}</td>
+        <td>${element.user.name}</td>
+        <td>${element.receiver_name}</td>
+        <td>${element.address}</td>
+        <td>(우편번호와야댐)</td>
+        <td>${element.phone_num}</td>
+        <div>
+        </tr>
+        `;
+
+          orderListUl.append(li);
+        });
+      });
     }
   </script>
 </html>
