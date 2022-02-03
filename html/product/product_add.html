@@ -82,7 +82,21 @@
       let selectedLargeCategoryId = $(this).val();
 
       if (selectedLargeCategoryId != -1) {
-        getLargeCategoryDetailById(selectedLargeCategoryId);
+        getLargeCategoryDetailById(selectedLargeCategoryId).then(
+          (smallCategoryList) => {
+            let smallCategorySelect = $("#smallCategorySelect");
+            smallCategorySelect.empty();
+            smallCategorySelect.append(`<option value="-1">-선택-</option>`);
+            smallCategoryList.forEach((element) => {
+              let listItem = `
+            <option value=${element.id}>
+            ${element.name}
+            </option>
+            `;
+              smallCategorySelect.append(listItem);
+            });
+          }
+        );
       }
     });
 
