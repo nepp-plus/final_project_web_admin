@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>배송 진행중</title>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <link href="/css/custom_style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="/js/custom_axios.js"></script>
+    <script src="/js/order/getOrderList.js"></script>
+  </head>
+  <body>
+    <h1>배송 진행중</h1>
+    <div>
+      <span>기간</span>
+
+      <span>시작 일자</span>
+      <input type="date" id="startDate" />
+      <span>종료 일자</span>
+      <input type="date" id="endDate" />
+    </div>
+    <div>
+      <button onclick="searchClick()">검색</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>DB내id</th>
+          <th>주문자</th>
+          <th>수령인</th>
+          <th>수령할 주소</th>
+          <th>우편번호</th>
+          <th>수령인 연락처</th>
+        </tr>
+      </thead>
+      <tbody id="orderList"></tbody>
+    </table>
+  </body>
+  <script>
+    function searchClick() {
+      getOrderList((status = "상품준비중")).then((orders) => {
+        console.log(orders);
+        let orderListUl = $("#orderList");
+        orderListUl.empty();
+        orders.forEach((element) => {
+          console.log(element);
+
+          let li = `
+        <tr>
+        <td>${element.id}</td>
+        <td>${element.user.name}</td>
+        <td>${element.receiver_name}</td>
+        <td>${element.address}</td>
+        <td>(우편번호와야댐)</td>
+        <td>${element.phone_num}</td>
+        <div>
+        </tr>
+        `;
+
+          orderListUl.append(li);
+        });
+      });
+    }
+  </script>
+</html>
