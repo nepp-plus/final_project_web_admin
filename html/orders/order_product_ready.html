@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="/js/custom_axios.js"></script>
-    <script src="/js/order/getOrderList.js"></script>
+    <script src="/js/order/orderApi.js"></script>
   </head>
   <body>
     <h1>상품 준비중</h1>
@@ -25,41 +25,47 @@
       <input type="date" id="startDate" />
       <span>종료 일자</span>
       <input type="date" id="endDate" />
+      <button onclick="refreshOrderList()">검색</button>
     </div>
-    <div>
-      <button onclick="searchClick()">검색</button>
-    </div>
-    <table>
+    <table style="margin-top: 20px">
       <thead>
         <tr>
           <th>DB내id</th>
           <th>주문자</th>
+          <th>주문일시</th>
           <th>수령인</th>
           <th>수령할 주소</th>
           <th>우편번호</th>
           <th>수령인 연락처</th>
+          <th>상태변경</th>
         </tr>
       </thead>
       <tbody id="orderList"></tbody>
     </table>
   </body>
   <script>
-    function searchClick() {
+    function refreshOrderList() {
       getOrderList((status = "상품준비중")).then((orders) => {
         console.log(orders);
         let orderListUl = $("#orderList");
         orderListUl.empty();
         orders.forEach((element) => {
           console.log(element);
+          // 날짜 데이터 양식 수정
+          let year = element.created_at.substr(0, 4);
+          let month = element.created_at.substr(5, 2);
+          let dayOfMonth = element.created_at.substr(8, 2);
 
           let li = `
         <tr>
-        <td>${element.id}</td>
+        <td onclick="viewOrderDetail(${element.id})">${element.id}</td>
         <td>${element.user.name}</td>
+        <td>${year}-${month}-${dayOfMonth}</td>
         <td>${element.receiver_name}</td>
         <td>${element.address}</td>
         <td>(우편번호와야댐)</td>
         <td>${element.phone_num}</td>
+        <td><button type='button' onclick="setOrderStatus(${element.id}, '배송준비중')">배송준비중 처리</button></td>
         <div>
         </tr>
         `;
@@ -68,5 +74,13 @@
         });
       });
     }
+
+    let setOrderStatus = (orderId, status) => {
+      patchOrderStatus(orderId, status).then(() => {});
+    };
+
+    let viewOrderDetail = (orderId) => {
+      alert(`상세보기 ${orderId}`);
+    };
   </script>
 </html>
